@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Github, Mail, Coffee, Sun, Moon, Cherry, Zap } from "lucide-react"
 
@@ -87,9 +87,20 @@ const socialLinks = [
   { name: "Email", icon: Mail, url: "mailto:hello@example.com", username: "hello@example.com" },
 ]
 
+const jobTitles = ["server engineer", "virtualization engineer", "network engineer", "infrastructure engineer"]
+
 export default function SocialLinksLanding() {
   const [currentTheme, setCurrentTheme] = useState<Theme>("day")
+  const [currentTitleIndex, setCurrentTitleIndex] = useState(0)
   const theme = themes[currentTheme]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTitleIndex((prev) => (prev + 1) % jobTitles.length)
+    }, 2500) // Change title every 2.5 seconds
+
+    return () => clearInterval(interval)
+  }, [])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -215,9 +226,20 @@ export default function SocialLinksLanding() {
             葉っぱ | leaf241
           </motion.h1>
 
-          <motion.p className={`${theme.textSecondary} text-lg`} variants={itemVariants}>
-            infrastructure engineer
-          </motion.p>
+          <div className="h-8 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={currentTitleIndex}
+                className={`${theme.textSecondary} text-lg`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                I'm a {jobTitles[currentTitleIndex]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
         </motion.div>
 
         {/* Social Links */}
